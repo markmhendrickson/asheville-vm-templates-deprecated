@@ -1,0 +1,108 @@
+{
+  "variables": {
+    "service_name": "asheville-api",
+    "username": "asheville"
+  },
+  "builders": [
+    {
+      "boot_command": [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us <wait>",
+        "hostname={{ .Name }} <wait>",
+        "fb=false debconf/frontend=noninteractive <wait>",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false <wait>",
+        "initrd=/install/initrd.gz -- <enter><wait>"
+      ],
+      "boot_wait": "4s",
+      "disk_size": 10140,
+      "guest_os_type": "ubuntu-64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "af5f788aee1b32c4b2634734309cc9e9",
+      "iso_checksum_type": "md5",
+      "iso_url": "http://old-releases.ubuntu.com/releases/12.04.2/ubuntu-12.04.2-server-amd64.iso",
+      "shutdown_command": "echo 'shutdown -P now' > shutdown.sh; echo '{{user `username`}}'|sudo -S sh 'shutdown.sh'",
+      "ssh_password": "{{user `username`}}",
+      "ssh_port": 22,
+      "ssh_username": "{{user `username`}}",
+      "tools_upload_flavor": "linux",
+      "type": "vmware",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "1",
+        "memsize": "512",
+        "numvcpus": "1"
+      }
+    },
+    {
+      "boot_command": [
+        "<esc><esc><enter><wait>",
+        "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+        "debian-installer=en_US auto locale=en_US kbd-chooser/method=us <wait>",
+        "hostname={{ .Name }} <wait>",
+        "fb=false debconf/frontend=noninteractive <wait>",
+        "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false <wait>",
+        "initrd=/install/initrd.gz -- <enter><wait>"
+      ],
+      "boot_wait": "5s",
+      "headless": false,
+      "guest_os_type": "Ubuntu_64",
+      "http_directory": "http",
+      "iso_checksum": "af5f788aee1b32c4b2634734309cc9e9",
+      "iso_checksum_type": "md5",
+      "iso_url": "http://old-releases.ubuntu.com/releases/12.04.2/ubuntu-12.04.2-server-amd64.iso",
+      "shutdown_command": "echo 'shutdown -P now' > shutdown.sh; echo '{{user `username`}}'|sudo -S sh 'shutdown.sh'",
+      "ssh_password": "{{user `username`}}",
+      "ssh_port": 22,
+      "ssh_username": "{{user `username`}}",
+      "type": "virtualbox"
+    }
+  ],
+  "post-processors": [
+    {
+      "output": "boxes/{{user `service_name`}}-{{.Provider}}-precise64.box",
+      "type": "vagrant"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo '{{user `username`}}'| sudo -S {{.Vars}} sh '{{.Path}}'",
+      "override": {
+        "virtualbox": {
+          "scripts": [
+            "scripts/base.sh",
+            "scripts/user.sh",
+            "scripts/key-dev.sh",
+            "scripts/virtualbox.sh",
+            "scripts/ruby.sh",
+            "scripts/puppet.sh",
+            "scripts/cleanup.sh",
+            "scripts/zerodisk.sh"
+          ]
+        },
+        "vmware": {
+          "scripts": [
+            "scripts/base.sh",
+            "scripts/user.sh",
+            "scripts/key-dev.sh",
+            "scripts/vmfusion.sh",
+            "scripts/ruby.sh",
+            "scripts/puppet.sh",
+            "scripts/cleanup.sh",
+            "scripts/zerodisk.sh"
+          ]
+        }
+      },
+      "type": "shell"
+    },
+    {
+      "type": "puppet-masterless",
+      "manifest_file": "manifests/site.pp",
+      "module_paths": [
+        "modules/"
+      ],
+      "execute_command": "sudo puppet apply --verbose --debug --modulepath '{{.ModulePath}}' {{.ManifestFile}}"
+    }
+  ]
+}
+

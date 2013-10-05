@@ -6,6 +6,7 @@ various Asheville services.
 Currently, there is only one "type" of service, API, which configures your VM for:
 
 - Python 2.7, virtualenv and pip
+- Postgres
 
 It is currently not intended to build images for production use, but
 in the future, will build Amazon AMI's or other Packer-compatible cloud

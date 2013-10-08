@@ -28,6 +28,7 @@
       "ssh_username": "{{user `username`}}",
       "tools_upload_flavor": "linux",
       "type": "vmware",
+      "vm_name": "{{ user `service_name` }}",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
         "memsize": "512",

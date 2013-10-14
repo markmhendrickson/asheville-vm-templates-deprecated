@@ -14,7 +14,7 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false <wait>",
         "initrd=/install/initrd.gz -- <enter><wait>"
       ],
-      "boot_wait": "4s",
+      "boot_wait": "10s",
       "disk_size": 10140,
       "guest_os_type": "ubuntu-64",
       "headless": true,
@@ -45,8 +45,8 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false <wait>",
         "initrd=/install/initrd.gz -- <enter><wait>"
       ],
-      "boot_wait": "5s",
-      "headless": false,
+      "boot_wait": "10s",
+      "headless": true,
       "guest_os_type": "Ubuntu_64",
       "http_directory": "http",
       "iso_checksum": "af5f788aee1b32c4b2634734309cc9e9",
@@ -56,6 +56,7 @@
       "ssh_password": "{{user `username`}}",
       "ssh_port": 22,
       "ssh_username": "{{user `username`}}",
+      "vm_name": "{{ user `service_name` }}",
       "type": "virtualbox"
     }
   ],
